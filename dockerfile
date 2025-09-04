@@ -33,6 +33,8 @@ ENV CLERK_SECRET_KEY=$CLERK_SECRET_KEY
 # Set environment variable to disable ESLint during build
 ENV DISABLE_ESLINT=true
 
+
+
 # Build the app
 RUN npm run build
 
