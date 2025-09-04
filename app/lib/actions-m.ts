@@ -6,7 +6,10 @@ import { z } from 'zod';
 import { currentUser } from '@clerk/nextjs/server';
 import { createClient } from '@supabase/supabase-js';
 
-
+const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
 
 async function getFullName() {
   const user = await currentUser();
@@ -45,15 +48,12 @@ export type State = {
   message?: string | null;
 };
 
+
 export async function createReferral(prevState: State, formData: FormData): Promise<State> {
   const username = await getFullName();
   const id = await getuserID();
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY!
-  );
-
+  
 
 
   if (!username && !id) {
@@ -84,6 +84,7 @@ export async function createReferral(prevState: State, formData: FormData): Prom
   const amountinCents = amount * 100;
   const amount_paidinCents = amount_paid * 100;
 
+   // Remove this when supabase if fully implemented
   try {
     await sql`
       INSERT INTO referralData (carDetail, carVin, user_id, name, Amount, Amount_paid, status, Date)
@@ -100,7 +101,7 @@ export async function createReferral(prevState: State, formData: FormData): Prom
     .from('referraldata')
     .insert([{
       cardetail: cardetail,
-      carVin: carvin,
+      carvin: carvin,
       user_id: id,
       name: username,
       amount: amountinCents,
@@ -151,6 +152,7 @@ export async function createReferralM(prevState: State, formData: FormData): Pro
   const amountinCents = 0;
   const amount_paidinCents = 0;
 
+  // remove this when supabase if fully implemented
   try {
     await sql`
       INSERT INTO referralData (carDetail, carVin, user_id, name, Amount, Amount_paid, status, Date)
@@ -161,6 +163,26 @@ export async function createReferralM(prevState: State, formData: FormData): Pro
     return {
       errors: {},
       message: 'Failed to create referral.',
+    };
+  }
+
+  const { error } = await supabase
+    .from('referraldata')
+    .insert([{
+      cardetail: cardetail,
+      carvin: carvin,
+      user_id: id,
+      name: username,
+      amount: amountinCents,
+      amount_paid: amount_paidinCents,
+      status: status,
+      date: date
+    }])
+  if (error) {
+    console.error(error);
+    return {
+      errors: {},
+      message: error.message,
     };
   }
 
@@ -195,6 +217,7 @@ export async function updateReferral(id: string, formData: FormData): Promise<an
   const amountinCents = amount * 100;
   const amount_paidinCents = amount_paid * 100;
 
+  // Remove this when supabase if fully implemented
   try {
     await sql`
       UPDATE referralData
@@ -211,6 +234,23 @@ export async function updateReferral(id: string, formData: FormData): Promise<an
     throw new Error('Failed to update referral.');
   }
 
+  const { error } = await supabase
+    .from('referraldata')
+    .update({
+      cardetail: cardetail,
+      carvin: carvin,
+      amount: amountinCents,
+      amount_paid: amount_paidinCents,
+      status: status,
+      date: new Date().toISOString()
+    })
+    .eq('id', id);
+
+    
+  if (error) {
+    console.error(error);
+    throw new Error('Failed to update referral.');
+  }
   revalidatePath('/dashboard/invoices');
   redirect('/dashboard/invoices');
 }
@@ -226,6 +266,16 @@ export async function deleteReferral(id: string) {
     throw new Error('Failed to delete referral.');
   }
 
+  const { error } = await supabase
+    .from('referraldata')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    console.error(error);
+    throw new Error('Failed to delete referral.');
+  }
+
   revalidatePath('/dashboard/invoices');
   redirect('/dashboard/invoices');
 }
@@ -237,6 +287,16 @@ export async function deleteReferralM(id: string) {
       WHERE id = ${id}
     `;
   } catch (error) {
+    console.error(error);
+    throw new Error('Failed to delete referral.');
+
+  }
+  const { error } = await supabase
+    .from('referraldata')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
     console.error(error);
     throw new Error('Failed to delete referral.');
   }
