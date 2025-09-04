@@ -1,4 +1,3 @@
-# Use an official Node.js image
 FROM node:19.5.0-alpine AS base
 
 # Set the working directory
