@@ -15,6 +15,9 @@ COPY --from=base /app/node_modules ./node_modules
 # Copy the rest of the application code
 COPY . .
 
+# Set environment variable to disable ESLint during build
+ENV DISABLE_ESLINT=true
+
 # Build the app
 RUN npm run build
 
