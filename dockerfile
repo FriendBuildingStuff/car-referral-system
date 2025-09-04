@@ -1,4 +1,4 @@
-FROM node:18.18.0-alpine AS base
+FROM node:20-alpine AS base
 
 # Set the working directory
 WORKDIR /app
@@ -9,7 +9,7 @@ COPY package*.json ./
 # Install the dependencies
 RUN npm install
 
-FROM node:18.18.0 AS build
+FROM node:20 AS build
 WORKDIR /app
 COPY --from=base /app/node_modules ./node_modules
 # Copy the rest of the application code
