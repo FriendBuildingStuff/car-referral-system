@@ -1,21 +1,23 @@
-# Use Node.js LTS image
-FROM node:18-alpine AS base
+# Use an official Node.js image
+FROM node:18-apline AS base
 
-# Set working directory
+# Set the working directory
 WORKDIR /app
 
-# Install dependencies
+# Copy the package.json and package-lock.json (if available)
 COPY package*.json ./
-RUN npm install --production
 
-# Copy app files
-FROM node:18 as base1 
-WORKDIR /app
+# Install the dependencies
+RUN npm install
+
+# Copy the rest of the application code
 COPY . .
+
+# Build the app
 RUN npm run build
 
-# Expose port
+# Expose the port (optional, based on your app)
 EXPOSE 3000
 
-# Start the app
+# Command to run the application (optional, based on your app)
 CMD ["npm", "start"]
