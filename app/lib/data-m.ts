@@ -415,4 +415,5 @@ export async function monthlyAwarded(){
     console.error('Database Error:', error);
     throw new Error('Failed to fetch monthly awarded.');
   }
+  
 }
