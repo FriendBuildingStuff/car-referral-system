@@ -31,13 +31,13 @@ async function getuserID(){
   return null;
 }
 
-async function getFullName() {
-  const user = await currentUser();
-  if (user) {
-    return String(user.fullName);
-  }
-  return null;
-}
+// async function getFullName() {
+//   const user = await currentUser();
+//   if (user) {
+//     return String(user.fullName);
+//   }
+//   return null;
+// }
 
 const ITEMS_PER_PAGE = 6;
 
@@ -415,5 +415,5 @@ export async function monthlyAwarded(){
     console.error('Database Error:', error);
     throw new Error('Failed to fetch monthly awarded.');
   }
-  
+
 }

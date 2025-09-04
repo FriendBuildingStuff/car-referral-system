@@ -1,4 +1,5 @@
-import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
+import { ClerkProvider, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
+import Link from 'next/link'
 import '@/app/ui/global.css'
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -33,12 +34,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {/* Auth Buttons */}
                 <div className="flex items-center space-x-4">
                   <SignedOut>
-                    <a href="/sign-up" className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                    <Link href="/sign-up" className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
                       Sign Up
-                    </a>
-                    <a href="/sign-in" className="bg-gray-800 hover:bg-gray-900 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                    </Link>
+                    <Link href="/sign-in" className="bg-gray-800 hover:bg-gray-900 text-white px-6 py-2 rounded-lg font-medium transition-colors">
                       Log In
-                    </a>
+                    </Link>
                   </SignedOut>
                   <SignedIn>
                     <UserButton afterSignOutUrl="/" />
