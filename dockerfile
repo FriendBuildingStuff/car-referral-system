@@ -9,7 +9,7 @@ COPY package*.json ./
 # Install the dependencies
 RUN npm install
 
-FROM node:18.18.0-alpine AS build
+FROM node:18.18.0 AS build
 WORKDIR /app
 COPY --from=base /app/node_modules ./node_modules
 # Copy the rest of the application code
