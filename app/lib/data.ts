@@ -15,6 +15,7 @@ export async function fetchRevenue() {
   try {
  
     const client  = await db.connect();
+    
     const data = await client.sql<Revenue>`SELECT * FROM revenue`;
 
     console.log('Data fetch completed after 3 seconds.');

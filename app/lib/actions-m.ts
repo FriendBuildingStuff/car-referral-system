@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import { currentUser } from '@clerk/nextjs/server';
+import { createClient } from '@supabase/supabase-js';
 
 
 
@@ -15,7 +16,7 @@ async function getFullName() {
   return null;
 }
 
-async function getuserID(){
+async function getuserID() {
   const user = await currentUser();
   if (user) {
     return String(user.id);
@@ -47,6 +48,13 @@ export type State = {
 export async function createReferral(prevState: State, formData: FormData): Promise<State> {
   const username = await getFullName();
   const id = await getuserID();
+
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY!
+  );
+
+
 
   if (!username && !id) {
     return {
@@ -88,7 +96,25 @@ export async function createReferral(prevState: State, formData: FormData): Prom
       message: 'Failed to create referral.',
     };
   }
-
+  const { error } = await supabase
+    .from('referraldata')
+    .insert([{
+      cardetail: cardetail,
+      carVin: carvin,
+      user_id: id,
+      name: username,
+      amount: amountinCents,
+      amount_paid: amount_paidinCents,
+      status: status,
+      date: date
+    }])
+  if (error) {
+    console.error(error);
+    return {
+      errors: {},
+      message: error.message,
+    };
+  }
   revalidatePath('/dashboard/invoices');
   redirect('/dashboard/invoices');
 
@@ -162,7 +188,7 @@ export async function updateReferral(id: string, formData: FormData): Promise<an
     amount_paid: formData.get('amount_paid'),
     status: formData.get('status'),
     date: new Date().toISOString(),
-    
+
   });
 
   const { cardetail, carvin, amount, amount_paid, status } = validatedFields;
