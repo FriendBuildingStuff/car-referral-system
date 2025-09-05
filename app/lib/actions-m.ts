@@ -85,18 +85,7 @@ export async function createReferral(prevState: State, formData: FormData): Prom
   const amount_paidinCents = amount_paid * 100;
 
    // Remove this when supabase if fully implemented
-  try {
-    await sql`
-      INSERT INTO referralData (carDetail, carVin, user_id, name, Amount, Amount_paid, status, Date)
-      VALUES (${cardetail}, ${carvin}, ${id}, ${username}, ${amountinCents}, ${amount_paidinCents}, ${status}, ${date})
-    `;
-  } catch (error) {
-    console.error(error);
-    return {
-      errors: {},
-      message: 'Failed to create referral.',
-    };
-  }
+  
   const { error } = await supabase
     .from('referraldata')
     .insert([{
@@ -152,19 +141,6 @@ export async function createReferralM(prevState: State, formData: FormData): Pro
   const amountinCents = 0;
   const amount_paidinCents = 0;
 
-  // remove this when supabase if fully implemented
-  try {
-    await sql`
-      INSERT INTO referralData (carDetail, carVin, user_id, name, Amount, Amount_paid, status, Date)
-      VALUES (${cardetail}, ${carvin}, ${id}, ${username}, ${amountinCents}, ${amount_paidinCents}, ${status}, ${date})
-    `;
-  } catch (error) {
-    console.error(error);
-    return {
-      errors: {},
-      message: 'Failed to create referral.',
-    };
-  }
 
   const { error } = await supabase
     .from('referraldata')
@@ -235,21 +211,8 @@ export async function updateReferral(id: string, formData: FormData): Promise<an
   const amount_paidinCents = amount_paid * 100;
 
   // Remove this when supabase if fully implemented
-  try {
-    await sql`
-      UPDATE referralData
-      SET carDetail = ${cardetail},
-          carVin = ${carvin},
-          Amount = ${amountinCents},
-          Amount_paid = ${amount_paidinCents},
-          status = ${status},
-          Date = ${new Date().toISOString()}
-      WHERE id = ${id}
-    `;
-  } catch (error) {
-    console.error(error);
-    throw new Error('Failed to update referral.');
-  }
+
+    
 
   const { error } = await supabase
     .from('referraldata')
@@ -273,15 +236,6 @@ export async function updateReferral(id: string, formData: FormData): Promise<an
 }
 
 export async function deleteReferral(id: string) {
-  try {
-    await sql`
-      DELETE FROM referralData
-      WHERE id = ${id}
-    `;
-  } catch (error) {
-    console.error(error);
-    throw new Error('Failed to delete referral.');
-  }
 
   const { error } = await supabase
     .from('referraldata')
