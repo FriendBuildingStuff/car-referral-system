@@ -186,6 +186,23 @@ export async function createReferralM(prevState: State, formData: FormData): Pro
     };
   }
 
+  // Send push notification to admin users
+  try {
+    await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/notifications`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        type: 'new_referral',
+        message: `New car referral submitted by ${username}. Car: ${cardetail}`,
+      }),
+    });
+  } catch (notificationError) {
+    console.error('Failed to send push notification:', notificationError);
+    // Don't fail the whole operation if notification fails
+  }
+
   revalidatePath('/dashboard');
   redirect('/dashboard');
 
