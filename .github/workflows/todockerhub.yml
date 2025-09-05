@@ -52,7 +52,7 @@ jobs:
           script: |
             sudo docker system prune -af --volumes
             sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/nextjs-app:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/nextjs-app:${{ github.sha }}
             sudo docker stop nextjs-app || true
             sudo docker rm nextjs-app || true
-            sudo docker run -d --name nextjs-app -p 443:3000 ${{ secrets.DOCKER_USERNAME }}/nextjs-app:latest
+            sudo docker run -d --name nextjs-app -p 443:3000 ${{ secrets.DOCKER_USERNAME }}/nextjs-app:${{ github.sha }}
