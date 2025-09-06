@@ -10,6 +10,16 @@ const nextConfig: NextConfig = {
    typescript: {
     ignoreBuildErrors: true, // This will ignore TypeScript errors during the build process
   },
+  
+  // For Electron builds, we can enable static export
+  ...(process.env.NODE_ENV === 'production' && process.env.ELECTRON_BUILD ? {
+    output: 'export',
+    trailingSlash: true,
+    images: {
+      unoptimized: true,
+    },
+  } : {}),
+  
   async rewrites() {
     return [
       {

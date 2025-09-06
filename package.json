@@ -1,10 +1,15 @@
 {
+  "name": "car-referral-system",
+  "main": "main.js",
   "private": true,
   "scripts": {
+    "dev": "next dev",
     "build": "next build",
-    "dev": "next dev --turbopack",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "electron": "cross-env NODE_ENV=development electron .",
+    "electron:build": "cross-env NODE_ENV=production ELECTRON_BUILD=true next build && cross-env NODE_ENV=production electron-builder",
+    "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:3000 && cross-env NODE_ENV=development electron .\""
   },
   "dependencies": {
     "@clerk/nextjs": "^6.10.3",
@@ -38,6 +43,32 @@
     "@types/react": "19.0.0",
     "@types/react-dom": "19.0.0",
     "@types/web-push": "^3.6.4",
-    "eslint-config-next": "15.1.5"
+    "concurrently": "^9.2.1",
+    "cross-env": "^10.0.0",
+    "electron": "^38.0.0",
+    "electron-builder": "^26.0.12",
+    "eslint-config-next": "15.1.5",
+    "wait-on": "^8.0.4"
+  },
+  "build": {
+    "appId": "com.yourcompany.car-referral-system",
+    "productName": "Car Referral System",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "out/**/*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "public/favicon.ico"
+    },
+    "mac": {
+      "target": "dmg"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
   }
 }
