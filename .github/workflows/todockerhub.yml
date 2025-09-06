@@ -57,4 +57,4 @@ jobs:
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/nextjs-app:latest
             sudo docker stop nextjs-app || true
             sudo docker rm nextjs-app || true
-            sudo docker run -d --name nextjs-app -p 80:3000 ${{ secrets.DOCKER_USERNAME }}/nextjs-app:latest
+            sudo docker run -d --name nextjs-app -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/nextjs-app:latest
