@@ -63,9 +63,27 @@ export async function POST(request: NextRequest) {
               body: message || 'A new car referral has been submitted and requires your attention.',
               icon: '/favicon.ico',
               badge: '/favicon.ico',
+              image: '/hero-website.png', // Add a larger image for desktop
+              tag: 'car-referral', // Group similar notifications
+              renotify: true, // Allow re-notification with same tag
+              requireInteraction: true, // Keep notification visible until user interacts
+              vibrate: [200, 100, 200], // Vibration pattern for mobile
+              actions: [
+                {
+                  action: 'view',
+                  title: 'View Dashboard',
+                  icon: '/favicon.ico'
+                },
+                {
+                  action: 'dismiss',
+                  title: 'Dismiss',
+                  icon: '/favicon.ico'
+                }
+              ],
               data: {
                 url: '/dashboard',
-                timestamp: Date.now()
+                timestamp: Date.now(),
+                type: 'new_referral'
               }
             })
           );
