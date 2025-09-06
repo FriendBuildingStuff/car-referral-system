@@ -369,22 +369,18 @@ export async function fetchCombinedAmountAwarded(query: string, currentPage: num
 
 export async function monthlyEarnings(){
   try{
-    // const monthlyEarnings = await sql`
-    // SELECT 
-    //   EXTRACT(MONTH FROM date) as month,
-    //   ROUND(SUM(amount)::numeric / 100.0, 2) as earnings
-    // FROM referralData
-    // WHERE EXTRACT(YEAR FROM date) = EXTRACT(YEAR FROM NOW())
-    // GROUP BY EXTRACT(MONTH FROM date)
-    // ORDER BY EXTRACT(MONTH FROM date)
-    // `;
-
     const {data: monthlyEarnings, error} = await supabase
-    .from('monthlyEarnings')
+    .from('monthlyearnings')
     .select('month, earnings');
 
     console.log('Monthly Earnings Data:', monthlyEarnings);
-    return monthlyEarnings;
+    
+    if (error) {
+      console.error('Supabase Error:', error);
+      throw new Error(`Failed to fetch monthly earnings: ${error.message}`);
+    }
+    
+    return monthlyEarnings || [];
   }
   catch(error){
     console.error('Database Error:', error);
@@ -394,26 +390,21 @@ export async function monthlyEarnings(){
 
 export async function monthlyAwarded(){
   try{
-    // const monthlyAwarded = await sql`
-    // SELECT 
-    // EXTRACT(MONTH FROM date) as month,
-    // SUM(amount_paid)/100 as awarded
-    // FROM referralData
-    // WHERE EXTRACT(YEAR FROM date) = EXTRACT(YEAR FROM NOW())
-    // GROUP BY EXTRACT(MONTH FROM date)
-    // ORDER BY EXTRACT(MONTH FROM date)
-    // `;
     const {data : monthlyAwarded, error} = await supabase
-    .from('monthlyAwarded')
+    .from('monthlyawarded')
     .select('month, awarded');
 
     console.log('Monthly Awarded Data:', monthlyAwarded);
 
-    return monthlyAwarded;
+    if (error) {
+      console.error('Supabase Error:', error);
+      throw new Error(`Failed to fetch monthly awarded: ${error.message}`);
+    }
+
+    return monthlyAwarded || [];
   }
   catch(error){
     console.error('Database Error:', error);
     throw new Error('Failed to fetch monthly awarded.');
   }
-
 }

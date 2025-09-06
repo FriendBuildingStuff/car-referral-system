@@ -28,7 +28,7 @@ export default function HomePage() {
         {/* Call to Action */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Link 
-            href="/sign-up" 
+            href="/dashboard" 
             className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3 rounded-lg font-semibold text-lg transition-colors"
           >
             Get Started

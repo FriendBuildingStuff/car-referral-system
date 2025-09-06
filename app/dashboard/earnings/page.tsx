@@ -28,8 +28,25 @@ const earningsChartConfig = {
 
 import React, { useState, useEffect } from "react";
 
+// Define interfaces for our data types
+interface AwardedData {
+  month: string;
+  awarded: number;
+}
+
+interface EarningsData {
+  month: string;
+  earnings: number;
+}
+
+interface CombinedData {
+  month: string;
+  awarded: number;
+  earnings: number;
+}
+
 function CombinedChart() {
-    const [data, setData] = useState<any[]>([]);
+    const [data, setData] = useState<CombinedData[]>([]);
 
     useEffect(() => {
         // Fetch combined data for both awarded and earnings
@@ -37,9 +54,13 @@ function CombinedChart() {
           fetch('/api/chart-data?type=awarded').then((response) => response.json()),
           fetch('/api/chart-data?type=earnings').then((response) => response.json()),
         ])
-          .then(([awardedData, earningsData]) => {
-            const combinedData = awardedData.map((item: any) => {
-              const earningsItem = earningsData.find((e: any) => e.month === item.month);
+          .then(([awardedData, earningsData]: [AwardedData[], EarningsData[]]) => {
+            // Add null checks to prevent errors
+            const safeAwardedData = awardedData || [];
+            const safeEarningsData = earningsData || [];
+            
+            const combinedData: CombinedData[] = safeAwardedData.map((item) => {
+              const earningsItem = safeEarningsData.find((e) => e.month === item.month);
               return {
             ...item,
             earnings: earningsItem ? earningsItem.earnings : 0,
@@ -47,9 +68,11 @@ function CombinedChart() {
             });
             setData(combinedData);
           })
-          .catch((error) =>
-            console.error("Error fetching combined data:", error)
-          );
+          .catch((error) => {
+            console.error("Error fetching combined data:", error);
+            // Set empty array on error to prevent crashes
+            setData([]);
+          });
     }, []);
 
     console.log(data);
@@ -65,7 +88,7 @@ function CombinedChart() {
                         tickLine={false}
                         tickMargin={10}
                         axisLine={false}
-                        tickFormatter={(value) => value.slice(0, 3)}
+                        tickFormatter={(value) => String(value).slice(0, 3)}
                     />
                     <ChartTooltip content={<ChartTooltipContent />} />
                     <Bar dataKey="earnings" fill="green" radius={4} />

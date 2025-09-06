@@ -64,7 +64,7 @@ export default function NotificationSettings() {
             </h3>
             <p className="mt-1 text-sm text-blue-700">
               {isSubscribed 
-                ? 'You\'ll receive notifications for new referrals' 
+                ? 'You\'ll receive notifications for new referrals on customers' 
                 : 'Enable notifications to get alerted about new referrals'
               }
             </p>

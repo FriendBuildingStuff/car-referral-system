@@ -8,10 +8,12 @@ export async function GET(request: Request) {
   try {
     if (type === 'awarded') {
       const data = await monthlyAwarded();
-      return NextResponse.json(data);
+      // Ensure we always return an array, even if data is null
+      return NextResponse.json(data || []);
     } else if (type === 'earnings') {
       const data = await monthlyEarnings();
-      return NextResponse.json(data);
+      // Ensure we always return an array, even if data is null
+      return NextResponse.json(data || []);
     } else {
       return NextResponse.json({ error: 'Invalid chart type' }, { status: 400 });
     }

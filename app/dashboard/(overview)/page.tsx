@@ -6,9 +6,6 @@ import { lusitana } from '@/app/ui/fonts';
 import { Suspense } from 'react';
 import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { fetchreferralsPagesMembers } from '@/app/lib/data-m';
-import NotificationSettings from '@/app/ui/dashboard/notification-settings';
-import NotificationTester from '@/app/ui/dashboard/notification-tester';
-import NotificationDebug from '@/app/components/NotificationDebug';
 
 
 
@@ -30,13 +27,7 @@ export default async function Page(props: {
         <h1 className={`${lusitana.className} text-2xl`}>Referral</h1>
       </div>
       
-      {/* Notification Settings for Admin Users */}
-      <div className="mt-4 space-y-4">
-        <NotificationSettings />
-        <NotificationTester />
-        <NotificationDebug />
-      </div>
-      
+
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search Referrals..." />
         <CreateInvoiceM />  
