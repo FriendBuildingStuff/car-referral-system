@@ -59,9 +59,15 @@ jobs:
             sudo docker rm nextjs-app || true
             sudo docker run -d --name nextjs-app -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/nextjs-app:latest
       
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
       - name: Deploy .env to EC2
         run: |
-          ssh -i ${{ secrets.EC2_SSH_KEY }} ec2-user@${{ secrets.EC2_HOST }} "cat > /home/ec2-user/app/.env" << 'EOF'
+          ssh -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_HOST }} "cat > /home/ubuntu/app/.env" << EOF
           CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }}
           DATABASE_URL=${{ secrets.DATABASE_URL }}
           DATABASE_URL_UNPOOLED=${{ secrets.DATABASE_URL_UNPOOLED }}
