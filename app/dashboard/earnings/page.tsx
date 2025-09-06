@@ -1,31 +1,6 @@
 "use client"
 
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
- 
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart"
- 
-// Remove direct imports of server functions
-// import { monthlyAwarded, monthlyEarnings } from "@/app/lib/data-m"
-
-const awardedChartConfig = {
-    value: {
-        label: "Awarded",
-        color: "#10b981",
-    },
-} satisfies ChartConfig;
-
-const earningsChartConfig = {
-    value: {
-        label: "Earnings",
-        color: "#f59e0b",
-    },
-} satisfies ChartConfig;
-
+import { Bar, BarChart, CartesianGrid, XAxis, ResponsiveContainer } from "recharts"
 import React, { useState, useEffect } from "react";
 
 // Define interfaces for our data types
@@ -47,6 +22,8 @@ interface CombinedData {
 
 function CombinedChart() {
     const [data, setData] = useState<CombinedData[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         // Fetch combined data for both awarded and earnings
@@ -67,39 +44,42 @@ function CombinedChart() {
               };
             });
             setData(combinedData);
+            setLoading(false);
           })
           .catch((error) => {
             console.error("Error fetching combined data:", error);
+            setError("Failed to load chart data");
+            setLoading(false);
             // Set empty array on error to prevent crashes
             setData([]);
           });
     }, []);
 
-    console.log(data);
+    if (loading) {
+        return <div className="p-4">Loading chart...</div>;
+    }
+
+    if (error) {
+        return <div className="p-4 text-red-500">Error: {error}</div>;
+    }
 
     return (
-        <>
-            <h2 className="text-lg font-semibold">Awarded & Earnings</h2>
-            <ChartContainer config={awardedChartConfig} className="min-h-[200px] w-full max-w-[600px]">
-                <BarChart accessibilityLayer data={data}>
-                    <CartesianGrid vertical={false} />
-                    <XAxis
-                        dataKey="month"
-                        tickLine={false}
-                        tickMargin={10}
-                        axisLine={false}
+        <div className="w-full h-96 p-4">
+            <h2 className="text-lg font-semibold mb-4">Awarded & Earnings</h2>
+            <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis 
+                        dataKey="month" 
                         tickFormatter={(value) => String(value).slice(0, 3)}
                     />
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                    <Bar dataKey="earnings" fill="green" radius={4} />
-                    <Bar dataKey="awarded" fill="orange" radius={4} />
-                    
+                    <Bar dataKey="earnings" fill="#10b981" />
+                    <Bar dataKey="awarded" fill="#f59e0b" />
                 </BarChart>
-            </ChartContainer>
-        </>
+            </ResponsiveContainer>
+        </div>
     );
 }
-
 
 export default function Page(){
      return (
