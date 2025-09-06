@@ -27,7 +27,7 @@ self.addEventListener('push', function(event) {
       vibrate: data.vibrate || [200, 100, 200],
       silent: false, // Ensure notification makes sound
       timestamp: data.data?.timestamp || Date.now()
-    };
+    }; 
 
     event.waitUntil(
       self.registration.showNotification(data.title, options)
