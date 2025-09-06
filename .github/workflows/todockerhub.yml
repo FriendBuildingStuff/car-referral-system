@@ -13,9 +13,6 @@ jobs:
     env:
           DISABLE_ESLINT: true
 
-    env_file:
-          - .env
-
     steps:
        - name: Checkout code
          uses: actions/checkout@v3
