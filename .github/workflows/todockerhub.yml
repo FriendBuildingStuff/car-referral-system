@@ -58,39 +58,38 @@ jobs:
             sudo docker stop nextjs-app || true
             sudo docker rm nextjs-app || true
             sudo docker run -d --name nextjs-app -p 3000:3000 ${{ secrets.DOCKER_USERNAME }}/nextjs-app:latest
-      
-      - name: Setup SSH key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
 
       - name: Deploy .env to EC2
-        run: |
-          ssh -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_HOST }} "cat > /home/ubuntu/app/.env" << EOF
-          CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }}
-          DATABASE_URL=${{ secrets.DATABASE_URL }}
-          DATABASE_URL_UNPOOLED=${{ secrets.DATABASE_URL_UNPOOLED }}
-          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
-          NEXT_PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL=${{ secrets.NEXT_PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL }}
-          NEXT_PUBLIC_CLERK_SIGN_IN_URL=${{ secrets.NEXT_PUBLIC_CLERK_SIGN_IN_URL }}
-          NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL=${{ secrets.NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL }}
-          NEXT_PUBLIC_CLERK_SIGN_UP_URL=${{ secrets.NEXT_PUBLIC_CLERK_SIGN_UP_URL }}
-          PGDATABASE=${{ secrets.PGDATABASE }}
-          PGHOST=${{ secrets.PGHOST }}
-          PGHOST_UNPOOLED=${{ secrets.PGHOST_UNPOOLED }}
-          PGPASSWORD=${{ secrets.PGPASSWORD }}
-          PGUSER=${{ secrets.PGUSER }}
-          POSTGRES_DATABASE=${{ secrets.POSTGRES_DATABASE }}
-          POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}
-          POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
-          POSTGRES_PRISMA_URL=${{ secrets.POSTGRES_PRISMA_URL }}
-          POSTGRES_URL=${{ secrets.POSTGRES_URL }}
-          POSTGRES_URL_NON_POOLING=${{ secrets.POSTGRES_URL_NON_POOLING }}
-          POSTGRES_URL_NO_SSL=${{ secrets.POSTGRES_URL_NO_SSL }}
-          POSTGRES_USER=${{ secrets.POSTGRES_USER }}
-          VERCEL_OIDC_TOKEN=${{ secrets.VERCEL_OIDC_TOKEN }}
-          VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY }}
-          VAPID_PRIVATE_KEY=${{ secrets.VAPID_PRIVATE_KEY }}
-          VAPID_EMAIL=${{ secrets.VAPID_EMAIL }}
-          EOF
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cat <<EOF | sudo tee /home/ubuntu/app/.env > /dev/null
+            CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }}
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
+            DATABASE_URL_UNPOOLED=${{ secrets.DATABASE_URL_UNPOOLED }}
+            NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+            NEXT_PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL=${{ secrets.NEXT_PUBLIC_CLERK_SIGN_IN_FORCE_REDIRECT_URL }}
+            NEXT_PUBLIC_CLERK_SIGN_IN_URL=${{ secrets.NEXT_PUBLIC_CLERK_SIGN_IN_URL }}
+            NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL=${{ secrets.NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL }}
+            NEXT_PUBLIC_CLERK_SIGN_UP_URL=${{ secrets.NEXT_PUBLIC_CLERK_SIGN_UP_URL }}
+            PGDATABASE=${{ secrets.PGDATABASE }}
+            PGHOST=${{ secrets.PGHOST }}
+            PGHOST_UNPOOLED=${{ secrets.PGHOST_UNPOOLED }}
+            PGPASSWORD=${{ secrets.PGPASSWORD }}
+            PGUSER=${{ secrets.PGUSER }}
+            POSTGRES_DATABASE=${{ secrets.POSTGRES_DATABASE }}
+            POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}
+            POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+            POSTGRES_PRISMA_URL=${{ secrets.POSTGRES_PRISMA_URL }}
+            POSTGRES_URL=${{ secrets.POSTGRES_URL }}
+            POSTGRES_URL_NON_POOLING=${{ secrets.POSTGRES_URL_NON_POOLING }}
+            POSTGRES_URL_NO_SSL=${{ secrets.POSTGRES_URL_NO_SSL }}
+            POSTGRES_USER=${{ secrets.POSTGRES_USER }}
+            VERCEL_OIDC_TOKEN=${{ secrets.VERCEL_OIDC_TOKEN }}
+            VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY }}
+            VAPID_PRIVATE_KEY=${{ secrets.VAPID_PRIVATE_KEY }}
+            VAPID_EMAIL=${{ secrets.VAPID_EMAIL }}
+            EOF
