@@ -17,9 +17,7 @@ const nextConfig: NextConfig = {
         destination: '/relianceautoworks.com/index.html',
       },
     ];
-  },
-
-  output: 'standalone',
+  }
 };
 
 export default nextConfig;
